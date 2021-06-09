@@ -5,6 +5,7 @@ USE sw14_internal;
 CREATE TABLE tb_careers( 
   id_career  INT PRIMARY KEY AUTO_INCREMENT,
   name_career VARCHAR(80),
+  status_career enum('Activo','Inactivo') DEFAULT 'Activo' NOT NULL,
   created_at_career TIMESTAMP
 );
 
