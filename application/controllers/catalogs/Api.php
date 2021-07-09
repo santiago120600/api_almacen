@@ -106,5 +106,66 @@ class Api extends MY_RootController {
         $this->response($response,200);
     }
 
+    function materials_get(){
+        $response = $this->DAO->selectEntity('tb_materials');
+        return $this->response($response,200);
+    }
+
+    function materials_post(){
+        $this->form_validation->set_data($this->post());
+        $this->form_validation->set_rules('pName','Nombre','required|max_length[60]|min_length[4]');
+        $this->form_validation->set_rules('pDesc','Descripción','required');
+        $this->form_validation->set_rules('pUse','Forma de uso','required');
+        $this->form_validation->set_rules('pPenal','En caso de extravio','required');
+        $this->form_validation->set_rules('pType','Tipo de material','required|in_list[Múltiple,Consumible,Herramienta]');
+        $this->form_validation->set_rules('pStock','Existencia de materiales','required|is_natural');
+        $this->form_validation->set_rules('pImage','La imagen','callback_image_required');
+        if($this->form_validation->run()){
+            $config['upload_path']="./files/materials/";
+            $config['allowed_types']="jpg|png|gif|jpeg";
+            $config['encrypt_name']=TRUE;
+            $config['file_ext_tolower']=TRUE;
+
+            $this->load->library('upload',$config);
+            if($this->upload->do_upload('pImage')){
+                $data = array(
+                    "name_material"=>$this->post('pName'),
+                    "desc_material"=>$this->post('pDesc'),
+                    "use_material"=>$this->post('pUse'),
+                    "penal_material"=>$this->post('pPenal'),
+                    "img_material"=>'./files/materials/'.$this->upload->data()['file_name'],
+                    "type_material"=>$this->post('pType'),
+                    "stock_material"=>$this->post('pStock'),
+                );
+                $response = $this->DAO->saveOrUpdate('tb_materials',$data);
+            }else{
+                 $response = array(
+                     "status"=>"error",
+                     "message"=>$this->upload->display_errors(),
+                     "validations"=>array(),
+                     "data"=>array()
+                 );
+            }
+        }else{
+             $response = array(
+                 "status"=>"error",
+                 "message"=>"Información enviada incorrectamente.",
+                 "validations"=>$this->form_validation->error_array(),
+                 "data"=>null
+             );
+        }
+
+        return $this->response($response,200);
+    }
+
+    function image_required($value){
+        if(isset($_FILES['pImage']) && $_FILES['pImage']&&!empty($_FILES['pImage']['name'])){
+            return TRUE;
+        }else{
+            $this->form_validation->set_message('image_required','El campo {field} es requerido');
+            return FALSE;
+        }
+    }
+
 
 }

@@ -93,4 +93,5 @@ CREATE TABLE tb_material_returns(
   FOREIGN KEY(return_loan) REFERENCES tb_loans(id_loan),
   FOREIGN KEY(return_person) REFERENCES tb_persons(id_person)
 );
-
+INSERT INTO tb_persons VALUES(null,'persona','persona','M','almacen@upsrj.edu.mx','1','3432424','Estudiante',null,now());
+INSERT INTO tb_users VALUES(null,'almacen@upsrj.edu.mx','$2y$12$/GgZ89X1bwLJS8qHSXi4RuCwJqWh/BetcDTycwTJFM4e6428q49Ku',now(),1);
