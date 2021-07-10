@@ -88,7 +88,8 @@ class Api extends MY_RootController {
                  "message"=>"Usuario creado correctamente",
                  "validations"=>array(),
                  "data"=>array(
-                     "key_password"=>$gen_password
+                     "key_password"=>$gen_password,
+                     "user_email"=>$this->post('pEmail')
                  )
              );
          }else{
